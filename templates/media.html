@@ -28,7 +28,11 @@
 
                 <div class="col-md-3">
                     {% if item.url == "" %}
-                        <a href="/load/?id={{ item.id }}"><img src="/{{ item.image }}" alt="pic here" style="width: 220px; height: 200px"></a>
+                        {% if item.mtype == 0 %}
+                        <a href="/load/?id={{ item.id }}"><img src="/pic_folder/{{ item.image }}" alt="pic here" style="width: 220px; height: 200px"></a>
+                            {% else %}
+                            <a href="/load/?id={{ item.id }}"><video  style="width: 220px; height: 200px" controls> <source src="/pic_folder/{{ item.file }}"></video></a>
+                            {% endif %}
                     {% else %}
                         <a href="/load/?id={{ item.id }}"><img src="{{ item.url }}" alt="pic here" style="width: 220px; height: 200px"></a>
                     {% endif %}

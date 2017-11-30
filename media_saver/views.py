@@ -78,7 +78,7 @@ def list_view(request):
 def addMedia(request):
     usr = User.objects.get(id=request.user.id)
     if request.method == 'POST':
-        if 'file' in request:
+        if 'file' in request.FILES:
             img = request.FILES['file']
             title = request.POST['title']
             description = request.POST['description']
@@ -87,7 +87,7 @@ def addMedia(request):
                 media = Media.objects.create(user=usr, image=img, title=title, description=description,
                                              date=date, mtype=0)
             else:
-                media = Media.objects.create(user=usr, image=img, title=title, description=description,
+                media = Media.objects.create(user=usr, file=img, title=title, description=description,
                                              date=date, mtype=1)
             media.save()
             m = Media.objects.filter(user=usr)
@@ -146,7 +146,7 @@ def instalog(request):
 @login_required(login_url='/login/')
 def getInstaMedia(request):
     access_token = SocialAccount.objects.get(user=request.user).instagram
-    r = requests.get('https://api.instagram.com/v1/users/self/media/recent/?access_token=' + access_token, params={'ACCESS_TOKEN': access_token, 'COUNT': 10})
+    r = requests.get('https://api.instagram.com/v1/users/self/media/recent/?access_token=' + access_token, params={'ACCESS_TOKEN': access_token})
     instagram_media = []
     current = []
     data = json.loads(r.text)['data']
