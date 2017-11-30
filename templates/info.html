@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Info</title>
+
+    {% load static %}
+        <script src="{% static "jquery-3.2.1.min.js" %}"></script>
+        <link rel="stylesheet" type="text/css" href="{% static "bootstrap.min.css" %}">
+        <script src="{% static "bootstrap.min.js" %}"></script>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+           <a href="/getMedia/" class="btn btn-default">
+          <span class="glyphicon glyphicon-chevron-left"></span> Back
+        </a>
+        </div>
+        <div class="col-md-6">
+            {% if media.url == "" %}
+                <img src="/{{ media.image }}" alt="pic here" style="width: 500px; height: 450px">
+            {% else %}
+                <img src="{{ media.url }}" alt="pic here" style="width: 500px; height: 450px">
+            {% endif %}
+        </div>
+        <div class="col-md-3"></div>
+    </div>
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+            <table style="margin-left: 200px">
+                <tr>
+                    <td align="center">{{ media.title }}</td>
+                </tr>
+                <tr>
+                    <td align="center">{{ media.description }}</td>
+                </tr>
+                <tr>
+                    <td align="center">{{ media.date }}</td>
+                </tr>
+                <tr>
+                    <td align="center"><button class="btn btn-danger" data-toggle="modal" data-target="#editModal">Edit</button></td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-3"></div>
+    </div>
+</div>
+
+
+
+
+<!---------------
+MODAL
+-->
+
+<div id="editModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Media editor</h4>
+      </div>
+        <!-------- Form -->
+
+              <div class="modal-body">
+                  <form action="/editMedia/" method="post" enctype="multipart/form-data">
+                      {% csrf_token %}
+                      <div class="form-group">
+                            <input type="text" name="id" value="{{ media.id }}" style="visibility: hidden" readonly>
+                      </div>
+                      <div class="form-group">
+                            <label for="title-input">Title</label>
+                            <input type="text" class="form-control" id="title-input"  name="title" placeholder="Enter title" maxlength="100" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description-input">Description</label>
+                            <input type="text" class="form-control" id="description-input"  name="description" placeholder="Enter description" maxlength="200" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="date-input">Date</label>
+                            <input type="date" class="form-control" id="date-input"  name="date" placeholder="Enter date" required>
+                        </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-default">Edit</button>
+                    </div>
+                </form>
+              </div>
+
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Media Loader</title>
+    {% load static %}
+        <script src="{% static "jquery-3.2.1.min.js" %}"></script>
+        <link rel="stylesheet" type="text/css" href="{% static "bootstrap.min.css" %}">
+        <script src="{% static "bootstrap.min.js" %}"></script>
+</head>
+<body>
+
+<div class="container">
+    <div class="row" style="border-bottom: 2px solid darkblue">
+        <a href="/logout/"><button class="btn btn-danger">Logout</button></a>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#mediaModal" style="margin: 20px 0 20px 300px; width: 400px"> Add media</button>
+        {% if not is_logged  %}
+        <a href="https://api.instagram.com/oauth/authorize/?client_id=d72fed8e31384a159c5221297d2579fe&redirect_uri=http%3a%2f%2f127.0.0.1%3a8000%2finstagramlog&response_type=code">Connect to Instagram</a>
+            {% else %}
+            <a href="/getInstaMedia/">Add media from Instagram</a>
+        {% endif %}
+        <a href="/listView/">List view</a>
+    </div>
+
+{% for m in media %}
+    <div class="row">
+        {% for item in m %}
+
+                <div class="col-md-3">
+                    {% if item.url == "" %}
+                        <a href="/load/?id={{ item.id }}"><img src="/{{ item.image }}" alt="pic here" style="width: 220px; height: 200px"></a>
+                    {% else %}
+                        <a href="/load/?id={{ item.id }}"><img src="{{ item.url }}" alt="pic here" style="width: 220px; height: 200px"></a>
+                    {% endif %}
+                    <p>{{ item.title }}</p>
+                </div>
+
+        {% endfor %}
+    </div>
+{% endfor %}
+
+
+
+
+    <!-- Modal for photo -->
+<div id="mediaModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Photo loader</h4>
+          <button class="btn btn-success" id="switcher">Load by url</button>
+      </div>
+        <!-------- Form -->
+
+              <div class="modal-body">
+                  <form action="/addMedia/" method="post" enctype="multipart/form-data">
+                      {% csrf_token %}
+                      <div class="form-group" id="fromfile">
+                            <label for="file-input">Load photo</label>
+                            <input type="file" class="form-control-file" id="file-input" name="file" maxlength="400">
+                        </div>
+
+                      <div class="form-group" id="fromurl" style="visibility: hidden">
+                            <label for="title-input">Url</label>
+                            <input type="text" class="form-control" id="title-input"  name="url" placeholder="Enter url" maxlength="400">
+                        </div>
+                        <div class="form-group">
+                            <label for="title-input">Title</label>
+                            <input type="text" class="form-control" id="title-input"  name="title" placeholder="Enter title" maxlength="100" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description-input">Description</label>
+                            <input type="text" class="form-control" id="description-input"  name="description" placeholder="Enter description" maxlength="200" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="date-input">Date</label>
+                            <input type="date" class="form-control" id="date-input"  name="date" placeholder="Enter date" required>
+                        </div>
+                      <div class="form-group">
+                          <label class="form-check-label">
+                            <input class="form-check-input" type="radio" name="media_type" id="inlineRadio1" value="Photo" required> Photo
+                          </label>
+                          <label class="form-check-label">
+                            <input class="form-check-input" type="radio" name="media_type" id="inlineRadio2" value="Video"> Video
+                          </label>
+                      </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-default">Load</button>
+                    </div>
+                </form>
+              </div>
+
+    </div>
+
+  </div>
+</div>
+
+</div>
+
+
+<script>
+    document.getElementById('switcher').onclick = function () {
+        var fileloader = document.getElementById('fromfile');
+        var urlloader = document.getElementById('fromurl');
+        if(urlloader.style.visibility == 'hidden'){
+            urlloader.style.visibility = 'visible';
+            fileloader.style.visibility = 'hidden';
+            document.getElementById('switcher').innerHTML = "Load from file";
+        }
+        else{
+            urlloader.style.visibility = 'hidden';
+            fileloader.style.visibility = 'visible';
+            document.getElementById('switcher').innerHTML = "Load by url";
+        }
+    }
+</script>
+
+</body>
+</html>

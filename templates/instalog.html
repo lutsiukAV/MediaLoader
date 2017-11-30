@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Instagram media</title>
+</head>
+<body>
+<h1 align="center">Instagram media</h1>
+<div class="container">
+    {% for m in media %}
+    <div class="row" style="margin-left: 300px; border-bottom: 1px solid black; margin-top: 10px;">
+
+                <img src="{{ m.0 }}" alt="pic">
+                <p>Date: {{ m.1 }}</p>
+                <p>Title: {{ m.2 }}</p>
+            <a href="/addInstaMedia/?url={{ m.0 }}&date={{ m.1 }}&title={{ m.2 }}">Add to my gallery</a>
+    </div>
+    {% endfor %}
+</div>
+</body>
+</html>
