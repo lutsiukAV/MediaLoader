@@ -147,19 +147,27 @@ def instalog(request):
 def getInstaMedia(request):
     access_token = SocialAccount.objects.get(user=request.user).instagram
     r = requests.get('https://api.instagram.com/v1/users/self/media/recent/?access_token=' + access_token, params={'ACCESS_TOKEN': access_token})
-    instagram_media = []
-    current = []
-    data = json.loads(r.text)['data']
-    for d in data:
-        url = d['images']['standard_resolution']['url']
-        date = d['caption']['created_time']
-        title = d['caption']['text']
-        current.append(url)
-        current.append(datetime.datetime.fromtimestamp(float(date)))
-        current.append(title)
-        instagram_media.append(current)
+    if r.status_code == 400:
+        u = User.objects.get(id=request.user.id)
+        SocialAccount.objects.filter(user=u).delete()
+        is_logged = len(SocialAccount.objects.filter(user=u)) > 0
+        media = Media.objects.filter(user=u)
+        row_media = groupMedia(media)
+        return HttpResponse(render(request, 'media.html', context={'media': row_media, 'is_logged': is_logged}))
+    else:
+        instagram_media = []
         current = []
-    return HttpResponse(render(request, 'instalog.html', context={'media': instagram_media}))
+        data = json.loads(r.text)['data']
+        for d in data:
+            url = d['images']['standard_resolution']['url']
+            date = d['caption']['created_time']
+            title = d['caption']['text']
+            current.append(url)
+            current.append(datetime.datetime.fromtimestamp(float(date)))
+            current.append(title)
+            instagram_media.append(current)
+            current = []
+        return HttpResponse(render(request, 'instalog.html', context={'media': instagram_media}))
 
 @login_required(login_url='/login')
 def addInstaMedia(request):

@@ -26,7 +26,7 @@
 
                 {% for m in media %}
                     {% if m.url == "" %}
-                        <a href="/load/?id={{ m.id }}"><img src="/{{ m.image }}" alt="pic here" style="width: 500px; height: 490px"></a>
+                        <a href="/load/?id={{ m.id }}"><img src="/pic_folder/{{ m.image }}" alt="pic here" style="width: 500px; height: 490px"></a>
                     {% else %}
                         <a href="/load/?id={{ m.id }}"><img src="{{ m.url }}" alt="pic here" style="width: 500px; height: 490px"></a>
                     {% endif %}
